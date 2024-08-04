@@ -1,5 +1,6 @@
 import { createServer } from 'node:http'
 import { Server } from 'socket.io'
+import { PeerServer } from 'peer'
 
 const createSocketServer = () => {
   const httpServer = createServer()
@@ -13,6 +14,21 @@ const createSocketServer = () => {
 
   return {
     io,
+    listen,
+  }
+}
+
+const createPeerServer = () => {
+  const peer = new PeerServer({ path: '/peer' })
+
+  const listen = async (port = 9000) => {
+    peer.listen(port, () => {
+      console.log(`Peer server listen on port ${port}`)
+    })
+  }
+
+  return {
+    peer,
     listen,
   }
 }
