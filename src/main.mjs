@@ -4,6 +4,8 @@ import { PeerServer } from 'peer'
 
 const SOCKET_EVENTS = {
   JOIN_ROOM: 'joinRoom',
+  JOINED_ROOM: 'joinedRoom',
+  LEAVE_ROOM: 'leaveRoom',
   CONNECTION: 'connection',
   DISCONNECT: 'disconnect',
 }
@@ -43,15 +45,27 @@ async function main() {
   const socketServer = createSocketServer()
   const peerServer = createPeerServer()
 
-  socketServer.io.on(SOCKET_EVENTS.CONNECTION, (socket) => {
-    console.log(`[Socket] User connected ${socket.id}`)
+  const io = socketServer.io
+  const peer = peerServer.peer
 
-    socket.on(SOCKET_EVENTS.JOIN_ROOM, () => {
+  io.on(SOCKET_EVENTS.CONNECTION, (socket) => {
+    const userId = socket.id
 
+    console.log(`[Socket] User connected ${userId}`)
+
+    socket.on(SOCKET_EVENTS.JOIN_ROOM, ({ room }) => {
+      socket.join(room)
+      console.log(`[Socket] User ${userId} joined on room ${room}`)
+      io.to(room).emit(SOCKET_EVENTS.JOINED_ROOM, { userId })
+    })
+
+    socket.on(SOCKET_EVENTS.LEAVE_ROOM, ({ room }) => {
+      socket.leave(room)
+      console.log(`[Socket] User ${userId} leaves the room ${room}`)
     })
 
     socket.on(SOCKET_EVENTS.DISCONNECT, () => {
-      console.log(`[Socket] User disconnected ${socket.id}`)
+      console.log(`[Socket] User disconnected ${userId}`)
     })
   })
 
