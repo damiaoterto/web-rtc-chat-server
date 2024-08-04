@@ -6,10 +6,12 @@
   "description": "A video chat application for training WebRTC concepts",
   "main": "index.js",
   "scripts": {
-    "dev": "node --watch --inspect ./src/main.mjs",
+    "dev": "node -r dotenv/config --watch --inspect ./src/main.mjs",
+    "start": "node -r dotenv/config ./src/main.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "peer": "^1.0.2",
     "socket.io": "^4.7.5"
   }

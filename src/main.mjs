@@ -10,8 +10,14 @@ const SOCKET_EVENTS = {
   DISCONNECT: 'disconnect',
 }
 
+const PEER_EVENTS = {
+  CONNECT: 'connection',
+  DISCONNECT: 'disconnect',
+}
+
 const createSocketServer = () => {
   const httpServer = createServer()
+
   const io = new Server(httpServer)
 
   const listen = async (port = 3000) => {
@@ -67,6 +73,14 @@ async function main() {
     socket.on(SOCKET_EVENTS.DISCONNECT, () => {
       console.log(`[Socket] User disconnected ${userId}`)
     })
+  })
+
+  peer.on(PEER_EVENTS.CONNECT, (client) => {
+    console.log(`[Peer] Peer user connected ${client.id}`)
+  })
+
+  peer.on(PEER_EVENTS.DISCONNECT, (client) => {
+    console.log(`[Peer] Peer user disconnected ${client.id}`)
   })
 
   await Promise.all([
