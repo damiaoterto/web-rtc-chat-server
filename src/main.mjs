@@ -2,6 +2,12 @@ import { createServer } from 'node:http'
 import { Server } from 'socket.io'
 import { PeerServer } from 'peer'
 
+const SOCKET_EVENTS = {
+  JOIN_ROOM: 'joinRoom',
+  CONNECTION: 'connection',
+  DISCONNECT: 'disconnect',
+}
+
 const createSocketServer = () => {
   const httpServer = createServer()
   const io = new Server(httpServer)
@@ -36,6 +42,18 @@ const createPeerServer = () => {
 async function main() {
   const socketServer = createSocketServer()
   const peerServer = createPeerServer()
+
+  socketServer.io.on(SOCKET_EVENTS.CONNECTION, (socket) => {
+    console.log(`[Socket] User connected ${socket.id}`)
+
+    socket.on(SOCKET_EVENTS.JOIN_ROOM, () => {
+
+    })
+
+    socket.on(SOCKET_EVENTS.DISCONNECT, () => {
+      console.log(`[Socket] User disconnected ${socket.id}`)
+    })
+  })
 
   await Promise.all([
     socketServer.listen(),
