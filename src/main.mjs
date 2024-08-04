@@ -21,7 +21,7 @@ const createSocketServer = () => {
 const createPeerServer = () => {
   const peer = new PeerServer({ path: '/peer' })
 
-  const listen = async (port = 9000) => {
+  const listen = async (port = 9090) => {
     peer.listen(port, () => {
       console.log(`Peer server listen on port ${port}`)
     })
@@ -32,3 +32,14 @@ const createPeerServer = () => {
     listen,
   }
 }
+
+async function main() {
+  const socketServer = createSocketServer()
+  const peerServer = createPeerServer()
+
+  await Promise.all([
+    socketServer.listen(),
+    peerServer.listen(),
+  ])
+}
+main()
